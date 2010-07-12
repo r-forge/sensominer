@@ -1,10 +1,12 @@
-fast=function(don,alpha=0.05,mot_min=2,graph=TRUE,ncp=5,B=200){
+fast=function(don,alpha=0.05,sep.words=";",word.min=5,graph=TRUE,axes=c(1,2),ncp=5,B=200,val=FALSE, B.val=200,label.miss=NULL){
 #don : fichier de données
 #alpha : intervalle de confiance pour les ellipses
-#mot_min : fréquence des mots qu'on enlève
+#sep.words: séparateur de mots
+#word.min : fréquence des mots qu'on enlève
 #ncp : nombre de composantes principales
 #B : nombre de simulations
-
+#val: éléments de validité
+#label.miss: label des données incomplètes s'il y en a
 
 don=as.data.frame(don)
 I=nrow(don)
@@ -18,22 +20,22 @@ don[,i]=as.factor(don[,i])}
 acm=MCA(don,graph=F,ncp=ncp)
 
 if (graph){
-plot.MCA(acm,choix="ind",invisible="var") 
-plot.MCA(acm,choix="ind",invisible="ind") 
-plot.MCA(acm,choix="ind") 
-plot.MCA(acm,choix="var")}
+plot.MCA(acm,choix="ind",invisible="var",axes=axes) 
+plot.MCA(acm,choix="ind",invisible="ind",axes=axes) 
+plot.MCA(acm,choix="ind",axes=axes) 
+plot.MCA(acm,choix="var",axes=axes)}
 
 ########################ENlisib pour les modalités (affiche une partie des modalités)
 X=0.05 #Pourcentage de modalités au milieu
 tab=as.matrix(acm$var$v.test)                       				  #récupération des vtests des modalités dans un tableau
-vtestmean1=mean(tab[,1])                 					  #calcul de la moyenne des vtests
-vtestmean2=mean(tab[,2])                 					  #calcul de la moyenne des vtests
-vtestsd1=sd(tab[,1])                     					  #calcul de l'écart-type des vtests
-vtestsd2=sd(tab[,2])                     					  #calcul de l'écart-type des vtests
+vtestmean1=mean(tab[,axes[1]])                 					  #calcul de la moyenne des vtests
+vtestmean2=mean(tab[,axes[2]])                 					  #calcul de la moyenne des vtests
+vtestsd1=sd(tab[,axes[1]])                     					  #calcul de l'écart-type des vtests
+vtestsd2=sd(tab[,axes[2]])                     					  #calcul de l'écart-type des vtests
 seuil1=vtestmean1+vtestsd1                            				  #seuil=moyenne+écart-type
 seuil2=vtestmean2+vtestsd2                            				  #seuil=moyenne+écart-type
-modext=which(abs(tab[,1])>=seuil1 | abs(tab[,2])>=seuil2)          #récupération des modalités dont la vtest est supérieure au seuil
-tab2=which(abs(tab[,1])<seuil1 & abs(tab[,2])<seuil2)               #récupération des modalités dont la vtest est inférieure au seuil
+modext=which(abs(tab[,axes[1]])>=seuil1 | abs(tab[,axes[2]])>=seuil2)          #récupération des modalités dont la vtest est supérieure au seuil
+tab2=which(abs(tab[,axes[1]])<seuil1 & abs(tab[,axes[2]])<seuil2)               #récupération des modalités dont la vtest est inférieure au seuil
 modmoy=tab2[sample(1:length(tab2),X*length(tab2))]       					  #tirage au hasard des modalités récupérées à l'étape précédente
 mod_kept=cbind(t(modext),t(modmoy))
 res=acm                                     					  #remplissage du résultat avec seulement les individus et modalités sélectionnés
@@ -42,7 +44,7 @@ res$var$cos2=acm$var$cos2[mod_kept,]
 res$var$contrib=acm$var$contrib[mod_kept,]
 res$var$v.test=acm$var$v.test[mod_kept,]
 if (graph){
-plot.MCA(res,choix="ind",invisible="ind") }                    #plot individus
+plot.MCA(res,choix="ind",invisible="ind",axes=axes) }                    #plot individus
 ########################Fin ENlisib pour les modalités              	
 
 ########################Graphiques préliminaires
@@ -171,8 +173,8 @@ coord[((i-1)*I+1):(i*I),]=tdc[,(1+gp):(gp+lev[i])]%*%acm$var$coord[(1+gp):(gp+le
 gp=gp+lev[i]}
 
 #Pour avoir les produits au barycentre des mots
-coord=sweep(coord,2,sqrt(acm$eig[1:ncp,1]),"/")
-
+for (i in 1:ncp){
+coord[,i]=coord[,i]/sqrt(acm$eig[i,1])}
 
 coord.partial=data.frame(coord,vect_prod_juge)
 
@@ -192,7 +194,23 @@ res.axe=out_axe(don,acm)
 sim=simulation(res.axe,nbsimul=B)
 if (graph){
 x11()
-plotellipse (sim,alpha = alpha, eig = signif(acm$eig,4))}
+color =  c("black", "red", "green3", "blue", "cyan", "magenta", 
+            "darkgray", "darkgoldenrod", "darkgreen", "violet", 
+            "turquoise", "orange", "lightpink", "lavender", "yellow", 
+            "lightgreen", "lightgrey", "lightblue", "darkkhaki", 
+            "darkmagenta", "darkolivegreen", "lightcyan", "darkorange", 
+            "darkorchid", "darkred", "darksalmon", "darkseagreen", 
+            "darkslateblue", "darkslategray", "darkslategrey", 
+            "darkturquoise", "darkviolet", "lightgray", "lightsalmon", 
+            "lightyellow", "maroon")
+repet=I/length(color)
+color=rep(color,ceiling(repet))
+plotellipse (sim, alpha = alpha, eig = signif(acm$eig,4),coord=axes,color=color)}
+
+#Calcul du rapport
+inter=sum(tapply(sim[[1]][[3]][,1],sim[[1]][[3]][,3],mean)^2)/I
+tot=sum(sim[[1]][[3]][,1]^2)/(B*I)
+ratio=inter/tot
 ###########################Fin ellipses
 
 
@@ -204,7 +222,7 @@ texte[,2]=rep(colnames(don),each=I)
 for (i in 1:J){
 texte[((I*(i-1))+1):(I*i),3]=paste(don[,i])}
 #On ne prend pas le tiret comme séparateur, ni l'apostrophe
-restext=textual(texte,3,1,sep.word="; (),?./:'!=+\n;{}-")
+restext=textual(texte,3,1,sep.word=sep.words)
 
 #Suppression des modalité g1, ..., g99 (attention tout est mis en minuscule avce textual)
 mod.suppr=paste("g",1:99,sep="")
@@ -225,8 +243,8 @@ grp=0
 for (i in 1:J){
 mots[(grp+1):(grp+lev[i])]=levels(don[,i])
 grp=grp+lev[i]}
-mots_split=strsplit(mots,split=c(" ","/",";",","))
-nb_mots=rep(NA,length(mots_split))                                                
+mots_split=strsplit(mots,split=sep.words)
+nb_mots=rep(NA,length(mots_split))
 for (i in 1:length(mots_split)){
 if (mots_split[[i]][1] %in% paste("G",1:99,sep="")){
 nb_mots[i]=0}
@@ -239,7 +257,7 @@ x11()
 plot(nb_mots2,main="Number of words per group")}
 
 #Seuil minimum à mettre en paramètre...
-freq_min=which(apply(restext$cont.table,2,sum)<=mot_min)
+freq_min=which(apply(restext$cont.table,2,sum)<=word.min)
 if (length(freq_min)!=0){
 restext$cont.table=restext$cont.table[,-freq_min]}
 
@@ -256,9 +274,45 @@ caract_prod=catdes(data.frame(juxt),1)
 ###########################Analyse textuelle
 
 
+##################Elements of validity
+if (val==TRUE){
+eig_perm=ratio_perm=rep(NA,B.val)
+for (i in 1:B.val){
+don_perm=don
+for (j in 1:J){
+if (!is.null(label.miss)){
+don_perm[which(don[,j]==label.miss),j]=don[which(don[,j]==label.miss),j]
+don_perm[which(don[,j]!=label.miss),j]=don[sample(which(don[,j]!=label.miss)),j]}
+else {
+don_perm[,j]=don[sample(1:I,I),j]}}
+acm_perm=MCA(don_perm,graph=F)
+eig_perm[i]=acm_perm$eig[1,1]
+res.axe_perm=out_axe(don_perm,acm_perm)
+sim_perm=simulation(res.axe_perm,nbsimul=B)
+inter_perm=sum(tapply(sim_perm[[1]][[3]][,1],sim_perm[[1]][[3]][,3],mean)^2)/I
+tot_perm=sum(sim_perm[[1]][[3]][,1]^2)/(B*I)
+ratio_perm[i]=inter_perm/tot_perm
+}
+eig_p.value=length(which(eig_perm>acm$eig[1,1]))/B.val
+ratio_p.value=length(which(ratio_perm>ratio))/B.val
+}
+##################End elements of validity
+
 ##################Sorties
-acm_call=list(X=acm$call$X,marge.col=acm$call$marge.col,marge.row=acm$call$marge.row,ncp=acm$call$ncp,quali=acm$call$quali,sim=sim)
+acm_call=list(X=acm$call$X,marge.col=acm$call$marge.col,marge.row=acm$call$marge.row,ncp=acm$call$ncp,quali=acm$call$quali,mca=acm,sim=sim)
 group_afm=list(coord=acm$var$eta2)
-res=list(eig=acm$eig,var=acm$var,ind=acm$ind,group=group_afm,call=acm_call,cooccur=compte2,reord=catego_num2,cramer=res2,textuel=caract_prod)                                                       
+if(val==TRUE){
+validity=vector(mode="list")
+validity$eig=vector(mode="list")
+validity$ratio=vector(mode="list")
+validity$eig$value=acm$eig[1,1]
+validity$eig$p.value=eig_p.value
+validity$eig$permut=eig_perm
+validity$ratio$value=ratio
+validity$ratio$p.value=ratio_p.value
+validity$ratio$permut=ratio_perm}
+else {
+validity=NULL}
+res=list(eig=acm$eig,var=acm$var,ind=acm$ind,group=group_afm,acm=acm,call=acm_call,cooccur=compte2,reord=catego_num2,cramer=res2,textual=caract_prod,validity=validity)                                                       
 class(res) <- c("catego", "list ")
 return(res)}
