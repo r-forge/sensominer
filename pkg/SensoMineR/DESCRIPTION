@@ -1,6 +1,6 @@
 Package: SensoMineR
-Version: 1.11
-Date: 2010-11-02
+Version: 1.12
+Date: 2010-16-08
 Title: Sensory data analysis with R
 Author: Francois Husson, Sebastien Le
 Maintainer: Francois Husson <husson@agrocampus-ouest.fr>
