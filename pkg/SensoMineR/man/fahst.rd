@@ -9,7 +9,7 @@ Perform Factorial Approach for Hierarchical Sorting Task data (FAHST) on a table
 For the partitionning variables, the label associated with a group can be an arbirary label (for example G1 for group 1, \emph{etc.}) or the words associated with the group in the case of qualified hierarchical sorting.}
 
 
-\usage{fahst(don,group,alpha=0.05,sep.word=";",word.min=5,graph=TRUE,axes=c(1,2),ncp=5,name.group=NULL,B=100,val=FALSE, B.val=200)}
+\usage{fahst(don,group,alpha=0.05,graph=TRUE,axes=c(1,2),name.group=NULL,ncp=5,B=100,val=FALSE, B.val=200)}
 
 \arguments{
   \item{don}{a data frame with n rows (products) and p columns (nested partitions for all consumers)}
@@ -17,9 +17,9 @@ For the partitionning variables, the label associated with a group can be an arb
   \item{alpha}{the confidence level of the ellipses}
   \item{graph}{boolean, if TRUE a graph is displayed}
   \item{axes}{a length 2 vector specifying the components to plot}
+  \item{name.group}{a vector containing the name of the consumers (by default, NULL and the consumers are named J1, J2 and so on)}
   \item{ncp}{number of dimensions kept in the results (by default 5)}
   \item{B}{the number of simulations (corresponding to the number of virtual panels) used to compute the ellipses}
-  \item{name.group}{a vector containing the name of the consumers (by default, NULL and the consumers are named J1, J2 and so on)}
   \item{val}{boolean, if TRUE elements of validity are calculating (it is time consuming)}
   \item{B.val}{the number of simulations used to obtain the elements of validity}
 }

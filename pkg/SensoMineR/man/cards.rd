@@ -24,12 +24,12 @@ Département de mathématiques appliquées, AGROCAMPUS OUEST Centre de Rennes
 }
 
 \examples{
+\dontrun{
 data(cards)
-
 ## Example of FAHST
 group.cards<-c(2,3,3,2,2,4,2,3,2,1,3,2,3,3,3,2,3,3,2,3,3,3,3,3,3,3,3,3,3,3)
 res.fahst<-fahst(cards,group=group.cards)
-
+}
 }
 
 \keyword{datasets}

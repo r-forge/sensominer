@@ -9,7 +9,7 @@ Print Factorial Approach for Hierarchical Sorting Task data (FAHST) results.
 }
 
 \usage{
-\method{print.fahst}{fahst}(x, file = NULL, sep = ";", \dots)
+\method{print}{fahst}(x, file = NULL, sep = ";", \dots)
 }
 
 \arguments{

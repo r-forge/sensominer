@@ -20,6 +20,7 @@ plotellipse(mat, alpha = 0.05, coord = c(1,2), eig, cex = 1, color = NULL)
 \author{François Husson}
 
 \examples{
+\dontrun{
 data(chocolates)
 donnee <- cbind.data.frame(sensochoc[,c(1,4,5:18)])
 axe <- construct.axes(donnee, scale.unit = TRUE)
@@ -31,6 +32,6 @@ axe <- construct.axes(donnee, group = c(6,8),
     name.group = c("A-F","T-S"),scale.unit = TRUE)
 simul <- simulation(axe, nbgroup = (ncol(axe$partiel)-2)/(ncol(axe$moyen)-2))
 plotellipse (simul, alpha = 0.05, eig = signif(axe$eig,4))
-}
+}}
 \keyword{dplot}
 \keyword{internal}

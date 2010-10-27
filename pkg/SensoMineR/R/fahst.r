@@ -1,5 +1,5 @@
-####################################Fonction de tri hiérarchique
-fahst=function(don,group,alpha=0.05,graph=TRUE,axes=c(1,2),name.group=NULL,ncp=5,B=200,val=FALSE, B.val=200){
+####################################Function for hierarchical sorting task
+fahst=function(don,group,alpha=0.05,graph=TRUE,axes=c(1,2),name.group=NULL,ncp=5,B=100,val=FALSE, B.val=200){
 #don: jeu de données
 #group: vecteur du nombre de hiérarchie pour chaque sujet
 #alpha: intervalle de confiance pour les ellipses
@@ -21,7 +21,7 @@ don[,i]=as.factor(don[,i])}
 if (is.null(name.group)) 
 name.group <- paste("Sj", 1:length(group), sep = ".")
 
-########################################Graphiques préliminaires
+########################################Preliminary graphs
 if (graph){
 
 #Nombre de niveaux par sujet
