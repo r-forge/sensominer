@@ -47,9 +47,7 @@ res <- boot(napping.don,method="napping")
 
 ######## Sorted task napping example
 data(smoothies)
-indice <- (2:73)-rep(c(0,0,3),24)
-smoothies <- smoothies[,indice]
-boot(smoothies,method="sortnapping")
+res <- boot(smoothies,method="sortnapping")
 
 ######## Sorting task example
 data(perfume)
