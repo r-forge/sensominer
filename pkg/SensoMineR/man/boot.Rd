@@ -59,6 +59,11 @@ res <- boot(smoothies,method="sortnapping",ncp=3)
 data(cards)
 group.cards<-c(2,3,3,2,2,4,2,3,2,1,3,2,3,3,3,2,3,3,2,3,3,3,3,3,3,3,3,3,3,3)
 res <- boot(cards,method="hsort", group=group.cards, ncp=5)
+
+######## Free choice profiling example
+data(perfume_fcp)
+group <- c(12,7,7,7,6,8)
+res <- fcp(perfume_fcp, group=group)
 }
 
 \keyword{multivariate}
