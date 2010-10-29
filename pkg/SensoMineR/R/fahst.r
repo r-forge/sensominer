@@ -179,7 +179,7 @@ num_juge=0
 for (j in 1:J){
 don_perm[,(num_juge+1):(num_juge+group[j])]=don[sample(1:I,I),(num_juge+1):(num_juge+group[j])]
 num_juge=num_juge+group[j]}
-mfa_perm=MFA(don_perm,group=group,type=rep("n",J),graph=F)
+mfa_perm=MFA(don_perm,group=group,type=rep("n",J),graph=FALSE)
 eig_perm[i]=mfa_perm$eig[1,1]
 
 res.axe_perm=out_axe_mfa(don_perm,mfa_perm)

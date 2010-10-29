@@ -9,7 +9,8 @@ the free choice profiling, the hierarchical sorting task}
 
 \usage{
 boot(X, method = "sorting", axes = 1:2, scale = TRUE, ncp = max(axes), group = NULL,
-    nbsim = 200,level.conf = 0.95,nbchoix = NULL,color = NULL,cex = 0.8, title = NULL){
+    nbsim = 200,level.conf = 0.95,nbchoix = NULL,color = NULL,cex = 0.8, 
+    title = NULL, new.plot = TRUE)
 }
 
 \arguments{
@@ -35,7 +36,8 @@ Calculate virtual panels by bootstrap of the panelists. For each virtual panel, 
 configuration and procrustes this configuration on the true configuration obtained from the true panel.
 }
 
-\references{Husson, F., Le Dien, S. & Pagès, J.  (2005). Confidence ellipse for the sensory profiles obtained by Principal Components Analysis. Food Quality and Preference.  16 (3). pp. 245-250.
+\value{
+Returns a list that can be used with the plotellipse function.
 }
 
 \author{Marine Cadoret and François Husson}
@@ -43,15 +45,20 @@ configuration and procrustes this configuration on the true configuration obtain
 \examples{
 ######## Napping example
 data(napping)
-res <- boot(napping.don,method="napping")
-
-######## Sorted task napping example
-data(smoothies)
-res <- boot(smoothies,method="sortnapping")
+res <- boot(napping.don,method="napping",ncp=3)
 
 ######## Sorting task example
 data(perfume)
 res <- boot(perfume,method="sorting",ncp=3)
+
+######## Sorted task napping example
+data(smoothies)
+res <- boot(smoothies,method="sortnapping",ncp=3)
+
+######## Hierarchical sorting task example
+data(cards)
+group.cards<-c(2,3,3,2,2,4,2,3,2,1,3,2,3,3,3,2,3,3,2,3,3,3,3,3,3,3,3,3,3,3)
+res <- boot(cards,method="hsort", group=group.cards, ncp=5)
 }
 
 \keyword{multivariate}
