@@ -19,9 +19,7 @@ A data frame with 12 rows (the number of perfumes) and 47 columns.
 
 \examples{
 data(perfume_fcp)
-group <- c(12,7,7,7,6,8)
-res <- fcp(perfume_fcp, group=group)
-
+res <- fcp(perfume_fcp, group = c(12,7,7,7,6,8))
 }
 
 \keyword{datasets}

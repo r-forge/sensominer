@@ -8,7 +8,7 @@
 the free choice profiling, the hierarchical sorting task}
 
 \usage{
-boot(X, method = "sorting", axes = 1:2, scale = TRUE, ncp = max(axes), group = NULL,
+boot(X, method = "sorting", axes = 1:2, scale = TRUE, ncp = NULL, group = NULL,
     nbsim = 200,level.conf = 0.95,nbchoix = NULL,color = NULL,cex = 0.8, 
     title = NULL, new.plot = TRUE)
 }
@@ -20,7 +20,7 @@ boot(X, method = "sorting", axes = 1:2, scale = TRUE, ncp = max(axes), group = N
 "freechoice" (for free choice profiling), "hsort" (for hierarchical sorting task data).}  
   \item{axes}{a length 2 vector specifying the components to plot}
   \item{scale}{boolean, used when method="freechoice"; if TRUE, the variables are scaled}
-  \item{ncp}{number of components used to procrustes the virtual subspaces on the true subspace}
+  \item{ncp}{number of components used to procrustes the virtual subspaces on the true subspace; by default NULL and the number of components is estimated}
   \item{group}{a list indicating the number of variables in each group; used when method="freechoice" or method="hsort"}
   \item{nbsim}{the number of simulations (corresponding to the number of virtual panels) used to compute the ellipses}
   \item{level.conf}{confidence level used to construct the ellipses. By default, 0.95}
@@ -37,7 +37,7 @@ configuration and procrustes this configuration on the true configuration obtain
 }
 
 \value{
-Returns a list that can be used with the plotellipse function.
+Returns a list with estim.ncp which corresponds to the output of the estim_ncp function (function which estimates the number of components) and the simul object which can be used with the plotellipse function.
 }
 
 \author{Marine Cadoret and François Husson}
@@ -62,8 +62,7 @@ res <- boot(cards,method="hsort", group=group.cards, ncp=5)
 
 ######## Free choice profiling example
 data(perfume_fcp)
-group <- c(12,7,7,7,6,8)
-res <- fcp(perfume_fcp, group=group)
+res <- boot(perfume_fcp, method="freechoice", group = c(12,7,7,7,6,8))
 }
 
 \keyword{multivariate}

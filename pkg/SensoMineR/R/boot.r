@@ -1,5 +1,5 @@
 ################ Function
-boot <- function(X,method="sorting",axes=1:2,scale=TRUE,ncp=max(axes),group=NULL,nbsim=200,level.conf = 0.95,nbchoix = NULL,color=NULL,cex=0.8, title=NULL,new.plot=TRUE){
+boot <- function(X,method="sorting",axes=1:2,scale=TRUE,ncp=NULL,group=NULL,nbsim=200,level.conf = 0.95,nbchoix = NULL,color=NULL,cex=0.8, title=NULL,new.plot=TRUE){
 
  procrustes <- function(amat, target, orthogonal = FALSE, translate = FALSE,
         magnify = FALSE) {
@@ -63,18 +63,17 @@ if (orthogonal) {
         return(value)
     }
 ##########End procrustes
-  if (ncp<max(axes)) ncp <- max(axes)
   if (is.null(rownames(X))) rownames(X) <- 1:nrow(X)
   method <- tolower(method)
   ponder <- NULL
   
   if (method=="sorting") {
-#    vrai <- MFA(X,group=rep(1,ncol(X)),type=rep("n",ncol(X)),graph=FALSE,ncp=ncp)
+#    vrai <- MFA(X,group=rep(1,ncol(X)),type=rep("n",ncol(X)),graph=FALSE,ncp=Inf)
 #    group <- vrai$call$group.mod
 #    vrai$ind$coord = vrai$ind$coord/sqrt(length(group))
 #    if (is.null(nbchoix)) nbchoix <- length(group)
 #    X <- vrai$call$XTDC/sqrt(nbchoix)
-    vrai <- MCA(X,ncp=ncp,graph=FALSE)
+    vrai <- MCA(X,ncp=Inf,graph=FALSE)
     group <- unlist(lapply(X,nlevels))
     if (is.null(nbchoix)) nbchoix <- length(group)
     tab.disj <- tab.disjonctif(X)
@@ -88,7 +87,7 @@ if (orthogonal) {
     type <- rep("c",length(group))
     if (is.null(title)) title <- "Confidence ellipses for the napping configuration"
     if (is.null(nbchoix)) nbchoix <- length(group)
-    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=ncp)
+    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=Inf)
   }
 
   if (method=="sortnapping") {
@@ -103,36 +102,39 @@ if (orthogonal) {
     type <- rep("c",length(group))
     if (is.null(title)) title <- "Confidence ellipses for the sorted napping configuration"
     if (is.null(nbchoix)) nbchoix <- length(group)
-    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=ncp)
+    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=Inf)
   }
   if (method=="freechoice") {
-    if (scale) type=rep("s",length(group))
-    if (!scale) type=rep("c",length(group))
+    if (scale) X <- scale(X)*sqrt(nrow(X)/(nrow(X)-1))
+    type=rep("c",length(group))
     if (is.null(nbchoix)) nbchoix <- length(group)
     if (is.null(title)) title <- "Confidence ellipses for the free choice profiling"
-    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=ncp)
+    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=Inf)
   }
   if (method=="hsort") {
     if (is.null(nbchoix)) nbchoix <- length(group)
     if (is.null(title)) title <- "Confidence ellipses for the hierarchical sorting task"
     type=rep("n",length(group))
-    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=ncp)
+    vrai <- MFA(X,group=group,type=type,graph=FALSE,ncp=Inf)
     X <- vrai$call$XTDC
     group <- vrai$call$group.mod
   }
 
   if (is.null(ponder)) ponder <- vrai$call$col.w
+  estim.ncp <- estim_ncp(sweep(X,2,sqrt(ponder),FUN="*"),scale=FALSE,ncp.min=0,ncp.max=min(10,ncol(X)))
+  if (is.null(ncp))  ncp <- max(estim.ncp$ncp,2,max(axes))
+    
   listvar <- list()
   for (j in 1:length(group)) listvar[[j]] <- (cumsum(group)[j]-group[j]+1):cumsum(group)[j]
-  jdd=vrai$ind$coord
-    
+  jdd=vrai$ind$coord[,1:ncp]
+        
   for (k in 1:nbsim){
     choix <- sample(1:length(group),nbchoix,replace=TRUE)
     auxi <- X[,unlist(listvar[choix])]
     ponder.auxi <- ponder[unlist(listvar[choix])]
     aux <- PCA(auxi,scale=FALSE,graph=FALSE,col.w=ponder.auxi,ncp=ncp)$ind$coord
-    aux <- procrustes(as.matrix(aux),as.matrix(vrai$ind$coord),orthogonal = TRUE, translate = TRUE,magnify=FALSE)$rmat
-    colnames(aux) <- colnames(vrai$ind$coord)
+    aux <- procrustes(as.matrix(aux),as.matrix(vrai$ind$coord[,1:ncp]),orthogonal = TRUE, translate = TRUE,magnify=FALSE)$rmat
+    colnames(aux) <- colnames(vrai$ind$coord)[1:ncp]
     jdd = rbind.data.frame(jdd,aux)
   }
 
@@ -145,5 +147,5 @@ if (orthogonal) {
   simul$moy$P=cbind.data.frame(vrai$ind$coord,rownames(X))
   simul$moy$P=simul$moy$P[order(simul$moy$P[,ncol(simul$moy$P)]),]
   plotellipse (simul, alpha = 1-level.conf, eig = signif(vrai$eig,4),coord=axes,cex=cex,color=color,title=title)
-  return(simul)
+  return(list(simul=simul,estim.ncp=estim.ncp))
 }
