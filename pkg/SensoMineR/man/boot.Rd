@@ -45,20 +45,20 @@ Returns a list with estim.ncp which corresponds to the output of the estim_ncp f
 \examples{
 ######## Napping example
 data(napping)
-res <- boot(napping.don,method="napping",ncp=3)
+res <- boot(napping.don,method="napping")
 
 ######## Sorting task example
 data(perfume)
-res <- boot(perfume,method="sorting",ncp=3)
+res <- boot(perfume,method="sorting")
 
 ######## Sorted task napping example
 data(smoothies)
-res <- boot(smoothies,method="sortnapping",ncp=3)
+res <- boot(smoothies,method="sortnapping")
 
 ######## Hierarchical sorting task example
 data(cards)
 group.cards<-c(2,3,3,2,2,4,2,3,2,1,3,2,3,3,3,2,3,3,2,3,3,3,3,3,3,3,3,3,3,3)
-res <- boot(cards,method="hsort", group=group.cards, ncp=5)
+res <- boot(cards,method="hsort", group=group.cards)
 
 ######## Free choice profiling example
 data(perfume_fcp)

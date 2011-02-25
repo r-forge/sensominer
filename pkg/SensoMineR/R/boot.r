@@ -1,30 +1,24 @@
 ################ Function
 boot <- function(X,method="sorting",axes=1:2,scale=TRUE,ncp=NULL,group=NULL,nbsim=200,level.conf = 0.95,nbchoix = NULL,color=NULL,cex=0.8, title=NULL,new.plot=TRUE){
 
- procrustes <- function(amat, target, orthogonal = FALSE, translate = FALSE,
-        magnify = FALSE) {
+ procrustes <- function(amat, target, orthogonal = FALSE, translate = FALSE, magnify = FALSE) {
         for (i in nrow(amat):1) {
-            if (any(is.na(amat)[i, ]) | any(is.na(target)[i,
-                ])) {
+            if (any(is.na(amat)[i, ]) | any(is.na(target)[i, ])) {
                 amat <- amat[-i, ]
                 target <- target[-i, ]
             }
         }
         dA <- dim(amat)
         dX <- dim(target)
-        if (length(dA) != 2 || length(dX) != 2)
-            stop("arguments amat and target must be matrices")
-        if (any(dA != dX))
-            stop("dimensions of amat and target must match")
-        if (length(attr(amat, "tmat")))
-            stop("oblique loadings matrix not allowed for amat")       
+        if (length(dA) != 2 || length(dX) != 2) stop("arguments amat and target must be matrices")
+        if (any(dA != dX)) stop("dimensions of amat and target must match")
+        if (length(attr(amat, "tmat"))) stop("oblique loadings matrix not allowed for amat")       
 if (orthogonal) {
             if (translate) {
                 p <- dX[1]
                 target.m <- (rep(1/p, p) %*% target)[, ]
                 amat.m <- (rep(1/p, p) %*% amat)[, ]
-                target.c <- scale(target, center = target.m,
-                  scale = FALSE)
+                target.c <- scale(target, center = target.m, scale = FALSE)
                 amat.c <- scale(amat, center = amat.m, scale = FALSE)
                 j <- svd(crossprod(target.c, amat.c))
             }
@@ -32,25 +26,17 @@ if (orthogonal) {
                 amat.c <- amat
                 j <- svd(crossprod(target, amat))
             }
-       
 
             rot <- j$v %*% t(j$u)
-            if (magnify)
-                beta <- sum(j$d)/sum(amat.c^2)
+            if (magnify)  beta <- sum(j$d)/sum(amat.c^2)
             else beta <- 1
 
             B <- beta * amat.c %*% rot
-            if (translate)
-                B <- B + rep(as.vector(target.m), rep.int(p,
-                  dX[2]))
+            if (translate)  B <- B + rep(as.vector(target.m), rep.int(p, dX[2]))
    
        value <- list(rmat = B, tmat = rot, magnify = beta)
-            if (translate)
-                value$translate <- target.m - (rot %*% amat.m)[,
-                  ]
-    
+            if (translate) value$translate <- target.m - (rot %*% amat.m)[, ]
   }
-
         else {
             b <- solve(amat, target)
             gamma <- sqrt(diag(solve(crossprod(b))))
@@ -123,6 +109,7 @@ if (orthogonal) {
   if (is.null(ponder)) ponder <- vrai$call$col.w
   estim.ncp <- estim_ncp(sweep(X,2,sqrt(ponder),FUN="*"),scale=FALSE,ncp.min=0,ncp.max=min(10,ncol(X)))
   if (is.null(ncp))  ncp <- max(estim.ncp$ncp,2,max(axes))
+  else ncp <- ncol(vrai$ind$coord)
     
   listvar <- list()
   for (j in 1:length(group)) listvar[[j]] <- (cumsum(group)[j]-group[j]+1):cumsum(group)[j]
