@@ -11,7 +11,9 @@ Performs preference mapping techniques based on multidimensional exploratory dat
 carto(Mat, MatH, 
       level = 0, regmod = 1, coord = c(1, 2), asp = 1, 
       cex = 1.3, col = "steelblue4", font = 2, clabel = 0.8,
-      label.j = FALSE, resolution = 200, nb.clusters = 0)
+      label.j = FALSE, resolution = 200, nb.clusters = 0,
+	    graph.tree=TRUE,graph.corr=TRUE,graph.carto=TRUE,
+	    col.min=7.5,col.max=0)
 }
 
 \arguments{
@@ -34,6 +36,11 @@ is not assigned to the \code{option} parameter}
 \item{label.j}{boolean, if T then the labels of the panelists who gave the hedonic scores are displayed}
 \item{resolution}{resolution of the map}
 \item{nb.clusters}{number of clusters to use (by default, 0 and the optimal numer of clusters is calculated}
+\item{graph.tree}{boolean, if TRUE plots the tree in 2 dimensions}
+\item{graph.corr}{boolean, if TRUE plots the variables factor map}
+\item{graph.carto}{boolean, if TRUE plots the preference map}
+\item{col.min}{define the color which match to the low levels of preference}
+\item{col.max}{define the color which match to the high levels of preference}
 }
 
 \details{
@@ -54,8 +61,8 @@ finding out a consumer optimal product, its sensory profile and the key sensory 
 }
 
 \author{
-François Husson \email{François.Husson@agrocampus-rennes.fr} \cr
-Sébastien Lê \email{Sebastien.Le@agrocampus-rennes.fr}
+Francois Husson \email{husson@agrocampus-rennes.fr} \cr
+Sebastien Le \email{Sebastien.Le@agrocampus-rennes.fr}
 }
 
 \seealso{\code{\link[FactoMineR]{MFA}}, \code{\link[FactoMineR]{GPA}}}
