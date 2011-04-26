@@ -1,6 +1,6 @@
 carto <- function (Mat, MatH, level = 0, regmod = 1,   
     	coord = c(1, 2), asp = 1, cex = 1.3, col = "steelblue4", font = 2, clabel = 0.8,label.j=FALSE,resolution=200,nb.clusters=0,
-		graph.tree=TRUE,graph.corr=TRUE,graph.carto=TRUE,col.min=7.5,col.max=0)
+		  graph.tree=TRUE,graph.corr=TRUE,graph.carto=TRUE,main=NULL,col.min=7.5,col.max=0)
 {
 #col : 0=red 
 #	1=orange
@@ -30,12 +30,8 @@ cm.colors2=function (n, alpha = 1) {
     	else character(0L)
 }
 
-
-if(graph.tree){
-dev.new()
-}
-    op <- par(no.readonly = TRUE)
-    on.exit(par(op))
+#    op <- par(no.readonly = TRUE)
+#    on.exit(par(op))
     predire <- function(n1, n2, coeff) {
         coeff[1] + coeff[2] * n1 + coeff[3] * n2 + coeff[4] *
             n1 * n1 + coeff[5] * n2 * n2 + coeff[6] * n1 * n2
@@ -44,16 +40,12 @@ dev.new()
     matrice <- cbind(row.names(MatH), Mat[rownames(MatH),],MatH)
     classif <- agnes(dist(t(MatH)),method="ward")
 if(graph.tree){
+    dev.new()
     plot(classif,main="Cluster Dendrogram",xlab="Panelists",which.plots=2)
-}
-if(graph.corr){
-dev.new()
 }
     if (nb.clusters==0){
        classif2 <- as.hclust(classif)
        nb.clusters = which.max(rev(diff(classif2$height))) + 1
-#      classif=hopach(t(MatH),d="euclid",K=10,mss="mean")
-#      nb.clusters=classif$clustering$k
     }
     aux=kmeans(t(MatH),centers=nb.clusters)$cluster
     mat <- matrix(0,nb.clusters,nrow(MatH))
@@ -65,6 +57,7 @@ dev.new()
     ab=cor(t(mat),matrice[,2:3],use="pairwise.complete.obs")
     aa=cor(matrice[,4:ncol(matrice)],matrice[,2:3],use="pairwise.complete.obs")
 if(graph.corr){
+    dev.new()
     plot(0,0,xlab=paste("Dim",coord[1]),ylab=paste("Dim",coord[2]),xlim=c(-1,1),ylim=c(-1,1),col="white",asp=1,main="Correlation circle")
     x.cercle <- seq(-1, 1, by = 0.01)
     y.cercle <- sqrt(1 - x.cercle^2)
@@ -88,9 +81,6 @@ if(graph.corr){
     }
 }
 
-if(graph.carto){
-dev.new()
-}
     matrice[, 4:ncol(matrice)] <- scale(matrice[, 4:ncol(matrice)], center =TRUE, scale =FALSE)[, ]
     nbconso <- ncol(matrice) - 3
     x1 <- matrice[, 2]
@@ -140,8 +130,10 @@ dev.new()
     depasse <- round(depasse/nbconso * 100)
     dimnames(depasse) <- list(as.character(f1), as.character(f2))
 if(graph.carto){
+    dev.new()
     col = cm.colors2(100)
-    image(f1, f2, depasse, col = col, xlab=paste("Dim",coord[1]), ylab=paste("Dim",coord[2]), main = "Preference mapping", font.main = font,
+    if (is.null(main)) main = "Preference mapping"
+    image(f1, f2, depasse, col = col, xlab=paste("Dim",coord[1]), ylab=paste("Dim",coord[2]), main = main, font.main = font,
         , cex.main = cex, asp = asp)
     contour(f1, f2, depasse, nlevels = 9, levels = c(20, 30,
         40, 50, 60, 70, 80, 90, 95), add =TRUE, labex = 0)

@@ -13,7 +13,7 @@ carto(Mat, MatH,
       cex = 1.3, col = "steelblue4", font = 2, clabel = 0.8,
       label.j = FALSE, resolution = 200, nb.clusters = 0,
 	    graph.tree=TRUE,graph.corr=TRUE,graph.carto=TRUE,
-	    col.min=7.5,col.max=0)
+	    main=NULL,col.min=7.5,col.max=0)
 }
 
 \arguments{
@@ -39,6 +39,7 @@ is not assigned to the \code{option} parameter}
 \item{graph.tree}{boolean, if TRUE plots the tree in 2 dimensions}
 \item{graph.corr}{boolean, if TRUE plots the variables factor map}
 \item{graph.carto}{boolean, if TRUE plots the preference map}
+\item{main}{an overall title for the plot}
 \item{col.min}{define the color which match to the low levels of preference}
 \item{col.max}{define the color which match to the high levels of preference}
 }
@@ -71,7 +72,7 @@ Sebastien Le \email{Sebastien.Le@agrocampus-rennes.fr}
 ## Example 1: carto for the sensory descriptors
 data(cocktail)
 res.pca <- PCA(senso.cocktail)
-carto(res.pca$ind$coord[,1:2], hedo.cocktail)
+res.carto <- carto(res.pca$ind$coord[,1:2], hedo.cocktail)
 
 ## Example 2
 \dontrun{
@@ -79,7 +80,7 @@ data(cocktail)
 res.mfa <- MFA(cbind.data.frame(senso.cocktail,compo.cocktail),
     group=c(ncol(senso.cocktail),ncol(compo.cocktail)),
     name.group=c("senso","compo"))
-carto(res.mfa$ind$coord[,1:2], hedo.cocktail)
+res.carto <- carto(res.mfa$ind$coord[,1:2], hedo.cocktail)
 }
 }
 \keyword{multivariate}

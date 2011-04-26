@@ -36,8 +36,10 @@ Returns a list with the result of the MFA and the bootstraped results that can b
 }
 
 \examples{
+\dontrun{
 data(perfume_fcp)
 res <- fcp(perfume_fcp, group = c(12,7,7,7,6,8))
+}
 }
 
 \author{François Husson}
