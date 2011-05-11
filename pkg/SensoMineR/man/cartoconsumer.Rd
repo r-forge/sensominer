@@ -9,7 +9,7 @@ Performs preference mapping techniques based on multidimensional exploratory dat
 
 \usage{
 cartoconsumer(res, data.pref, nb.clust=0, seuil=0.8, consol=TRUE, ncp=5,
-		 graph.carto=TRUE,graph.hcpc=FALSE, graph.group=FALSE,
+		 scale.conso=TRUE,graph.carto=TRUE,graph.hcpc=FALSE, graph.group=FALSE,
 		col.min=7.5, col.max=0, contrast=0.2, level=0, asp=0,lwd=2)
 				}
 
@@ -22,6 +22,7 @@ consumer for the products}
 \item{seuil}{the size of the area kept for each group of consumers}
 \item{consol}{a boolean. If TRUE, a k-means consolidation is performed}
 \item{ncp}{number of dimensions kept in the results (by default 5)}
+\item{scale.conso}{scale data by consumer}
 \item{graph.carto}{if TRUE, the preference map is displayed. If FALSE, no graph is displayed}
 \item{graph.hcpc}{if TRUE, graphics of segmentation (trees and indivuals map) are displayed. If FALSE, no graph are displayed}
 \item{graph.group}{if TRUE, preference maps for each group are displayed. If FALSE, no map are displayed}

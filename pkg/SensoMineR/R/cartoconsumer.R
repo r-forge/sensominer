@@ -1,4 +1,4 @@
-cartoconsumer <- function(res,data.pref,nb.clust=0,seuil=0.8,consol=TRUE,ncp=5,graph.carto=TRUE,graph.hcpc=FALSE,graph.group=FALSE,col.min=7.5,col.max=0,contrast=0.2,level=0,asp=0,lwd=2){
+cartoconsumer <- function(res,data.pref,nb.clust=0,seuil=0.8,consol=TRUE,ncp=5,scale.conso=TRUE,graph.carto=TRUE,graph.hcpc=FALSE,graph.group=FALSE,col.min=7.5,col.max=0,contrast=0.2,level=0,asp=0,lwd=2){
 	cm.colors2 <- function (n, alpha = 1) {
     		if ((n <- as.integer(n[1L])) > 0) {
         		even.n <- n%%2 == 0
@@ -14,11 +14,9 @@ cartoconsumer <- function(res,data.pref,nb.clust=0,seuil=0.8,consol=TRUE,ncp=5,g
 	}
 
 	data.pref <- t(data.pref)
-	data.pref=t(scale(t(data.pref)))
-	res.pca=PCA(data.pref,graph=FALSE,scale.unit=FALSE,ncp=ncp)
-	if (graph.hcpc==FALSE){
-		nb.clust=-1
-	}
+#	if (scale.conso) data.pref=t(scale(t(data.pref)))
+	res.pca=PCA(data.pref,graph=FALSE,scale.unit=scale.conso,ncp=ncp)
+	if (graph.hcpc==FALSE) nb.clust=-1
 	res.hcpc <- HCPC(res.pca, nb.clust=nb.clust,graph=graph.hcpc,consol=consol,order=FALSE)
 	gr <- res.hcpc$data.clust$clust
 	gr.n=as.numeric(levels(as.factor(gr)))

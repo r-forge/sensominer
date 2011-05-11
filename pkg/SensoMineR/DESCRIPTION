@@ -1,8 +1,8 @@
 Package: SensoMineR
 Version: 1.14
-Date: 2011-26-04
+Date: 2011-12-05
 Title: Sensory data analysis with R
-Author: Francois Husson, Sebastien Le
+Author: Francois Husson, Sebastien Le, Marine Cadoret
 Maintainer: Francois Husson <husson@agrocampus-ouest.fr>
 Depends: FactoMineR
 Description: an R package for analysing sensory data
